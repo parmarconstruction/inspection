@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parmar Construction - PPE & Attendance Form</title>
+    <!-- Link the CSS file -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+    <div class="letterhead">
+        <img src="Parmar_construction_logo.png" alt="Company Logo">
+        <div class="letterhead-info">
+            <p>Parmar Construction</p>
+            <p>Vendor Code: P299</p>
+            <p>Vendor under Tata Steel Jamshedpur</p>
+        </div>
+    </div>
+
+    <h1>Parmar Construction - PPE & Attendance Form</h1>
+
+    <!-- Login Section -->
+    <div id="loginSection">
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter Username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Form Section -->
+    <form id="ppeForm" class="hidden">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" required>
+
+        <label for="site">Select Site:</label>
+        <select id="site" onchange="loadAttendanceList()" required>
+            <option value="">-- Select Site --</option>
+            <option value="R&D SCS">R&D SCS</option>
+            <option value="NBM">NBM</option>
+            <option value="WRM">WRM</option>
+        </select>
+
+        <h3>Mark Attendance</h3>
+        <div id="attendanceList"></div>
+
+        <h3>PPE Checklist</h3>
+        <div id="ppeChecklist" class="hidden"></div>
+
+        <label>Tool Box Meeting PDF:</label>
+        <input type="file" class="file-upload" id="toolBoxPdf" accept=".pdf" required>
+
+        <label>Work Permit PDF:</label>
+        <input type="file" class="file-upload" id="workPermitPdf" accept=".pdf" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    const credentials = { username: 'admin', password: 'password123' };
+
+    const workmenData = {
+        'R&D SCS': ['Arjun Gope', 'Devendra Kumar Singh', 'Ekadashi Sen', 'Jadu Mandal', 'Lallu Kumar', 'Laxmikant Choudhary', 'Niranjan Gope', 'Rahit Ghatuary', 'Rajendar Kumar Rajak', 'Rajesh Kumar Manik', 'Sunil Mishra'],
+        'NBM': ['Anurag Dhan', 'Harish Singh Sardar', 'Janmajay Kumar Singh', 'Jay Narayan Singh', 'Lakhan Purty', 'Mahadeb Mahato', 'Raj Kishore Patro', 'Shiva Kumar Sahare', 'Vicky Kumar Mishra'],
+        'WRM': ['Akash Hembrom', 'Anumay Mistry', 'Kalicharan Gorai', 'Kartik Namata', 'Sanjay Gope', 'Saroj Kumar Murmu']
+    };
+
+    const ppeItems = ['Safety Helmet', 'FR Jacket', 'Safety Shoes', 'Safety Gloves', 'Nose Mask'];
+
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        if (username === credentials.username && password === credentials.password) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('ppeForm').classList.remove('hidden');
+        } else {
+            alert('Invalid username or password!');
+        }
+    }
+
+    function loadAttendanceList() {
+        const site = document.getElementById('site').value;
+        const attendanceList = document.getElementById('attendanceList');
+        const ppeChecklist = document.getElementById('ppeChecklist');
+        attendanceList.innerHTML = '';
+
+        if (site && workmenData[site]) {
+            let tableHtml = '<table><tr><th>Workman</th>';
+            ppeItems.forEach(item => tableHtml += `<th>${item}</th>`);
+            tableHtml += '</tr>';
+
+            workmenData[site].forEach(worker => {
+                tableHtml += `<tr>
+                    <td><input type="checkbox" onchange="togglePPE(this, '${worker}')"> ${worker}</td>`;
+                ppeItems.forEach(() => {
+                    tableHtml += `<td><input type="checkbox"></td>`;
+                });
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</table>';
+            attendanceList.innerHTML = tableHtml;
+            ppeChecklist.classList.remove('hidden');
+        }
+    }
+
+    function togglePPE(checkbox, worker) {
+        console.log(`Toggling PPE for ${worker}: ${checkbox.checked}`);
+    }
+</script>
+
+</body>
+</html>
